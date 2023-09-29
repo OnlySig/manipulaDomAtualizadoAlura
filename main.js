@@ -2,6 +2,17 @@ const btnDescanso = document.querySelectorAll(".app__card-list-item")
 const bgHtml = document.querySelector("html")
 const imgFundo = document.querySelector(".app__image")
 const appTitle = document.querySelector(".app__title")
+const inputToggleSwitch = document.querySelector("#alternar-musica")
+const musica = new Audio('./sons/luna-rise-part-one.mp3')
+musica.loop = true
+
+inputToggleSwitch.addEventListener("change", _ => {
+    if(musica.paused) {
+        musica.play()
+    } else {
+        musica.pause()
+    }
+})
 
 btnDescanso.forEach(element => {
     element.addEventListener("click", e => {
@@ -12,7 +23,7 @@ btnDescanso.forEach(element => {
         } else if(e.target.innerHTML === "Descanso curto") {
             alterarContexto("descanso-curto", 0, 2, element)
             alterarTitle('Que tal dar uma respirada?', 'Faça uma pausa curta!')
-        } else {
+        } else if(e.target.innerHTML === "Descanso longo") {
             alterarContexto("descanso-longo", 1, 0, element)
             alterarTitle('Hora de voltar à superfície.', 'Faça uma pausa longa.')
         }
