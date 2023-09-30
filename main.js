@@ -2,8 +2,10 @@ const btnDescanso = document.querySelectorAll(".app__card-list-item")
 const bgHtml = document.querySelector("html")
 const btnComecar = document.querySelector("#start-pause")
 const imgFundo = document.querySelector(".app__image")
+const imgBtn = document.querySelector(".app__card-primary-butto-icon")
 const appTitle = document.querySelector(".app__title")
 const inputToggleSwitch = document.querySelector("#alternar-musica")
+const tempoTela = document.querySelector("#timer")
 const musica = new Audio('./sons/luna-rise-part-one.mp3')
 const audioPlay = new Audio("./sons/play.wav")
 const audioPause = new Audio("./sons/pause.mp3")
@@ -11,7 +13,7 @@ const audioEnd = new Audio("./sons/beep.mp3")
 
 musica.loop = true
 
-let tempoDecorridoEmSegundos = 5
+let tempoDecorridoEmSegundos = 1500
 let intervaloId = null
 
 inputToggleSwitch.addEventListener("change", _ => {
@@ -26,12 +28,15 @@ btnDescanso.forEach(element => {
     element.addEventListener("click", e => {
         element.firstElementChild.classList.add("active")
         if(e.target.innerHTML === "Foco") {
+            mostrarTempo(tempoDecorridoEmSegundos = 1500)
             alterarContexto("foco", 1, 2, element)
             alterarTitle("Otimize sua produtividade,", "mergulhe no que importa.")
         } else if(e.target.innerHTML === "Descanso curto") {
+            mostrarTempo(tempoDecorridoEmSegundos = 300)
             alterarContexto("descanso-curto", 0, 2, element)
             alterarTitle('Que tal dar uma respirada?', 'Faça uma pausa curta!')
         } else if(e.target.innerHTML === "Descanso longo") {
+            mostrarTempo(tempoDecorridoEmSegundos = 900)
             alterarContexto("descanso-longo", 1, 0, element)
             alterarTitle('Hora de voltar à superfície.', 'Faça uma pausa longa.')
         }
@@ -56,28 +61,41 @@ function alterarTitle(h1, h2) {
 
 const contagemRegressiva = () => {
     if(tempoDecorridoEmSegundos <= 0) {
-        zerar()
         audioEnd.play()
         alert("acabou!")
+        zerar()
         return
     }
     tempoDecorridoEmSegundos -= 1
-    console.log(`Temporizador: ${tempoDecorridoEmSegundos}`)
+    mostrarTempo()
 }
 
 btnComecar.addEventListener("click", iniciarOuPausar)
 
 function iniciarOuPausar() {
     if(intervaloId) {
-        zerar()
         audioPause.play()
+        zerar()
         return
     }
     audioPlay.play()
+    btnComecar.childNodes[3].textContent = "Pausar"
+    imgBtn.src = "./imagens/pause.png"
     intervaloId = setInterval(contagemRegressiva, 1000)
 }
 
 function zerar() {
     clearInterval(intervaloId)
     intervaloId = null
+    btnComecar.childNodes[3].textContent = "Começar"
+    imgBtn.src = "./imagens/play_arrow.png"
 }
+
+function mostrarTempo(tempoParam) {
+    tempoParam = tempoDecorridoEmSegundos
+    const tempo = new Date(tempoParam * 1000)
+    const tempoFormatado = tempo.toLocaleString("pt-br", {minute: '2-digit', second: '2-digit'})
+    tempoTela.innerHTML = tempoFormatado
+}
+
+mostrarTempo()
